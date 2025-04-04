@@ -1,0 +1,28 @@
+{
+  "name": "cohort-phase-2-start",
+  "version": "1.0.0",
+  "description": "a node project for authentication ",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YashDevani-source/COHORT-WEB-DEV-PHASE-2.git"
+  },
+  "author": "yashdevani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YashDevani-source/COHORT-WEB-DEV-PHASE-2/issues"
+  },
+  "homepage": "https://github.com/YashDevani-source/COHORT-WEB-DEV-PHASE-2#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
