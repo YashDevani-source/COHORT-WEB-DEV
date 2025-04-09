@@ -17,10 +17,15 @@
   },
   "homepage": "https://github.com/YashDevani-source/COHORT-WEB-DEV-PHASE-2#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
-    "mongoose": "^8.13.2"
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.15.0",
+    "mongoose": "^8.13.2",
+    "nodemailer": "^6.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
