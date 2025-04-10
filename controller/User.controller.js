@@ -3,7 +3,7 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { errorMonitor } from "events";
+// import { errorMonitor } from "events";
 
 const registerUser = async (req, res) => {
     // Get data 
@@ -28,7 +28,7 @@ const registerUser = async (req, res) => {
 
 
        if (existingUser) {
-        return res.status(400).json({
+        return res.status(200).json({
             message: "User already exists"
         })
        }
@@ -46,6 +46,7 @@ const registerUser = async (req, res) => {
                 message: "User not registered"
             })
         }
+
 
         const token = crypto.randomBytes(32).toString("hex")
         console.log(token);
@@ -73,9 +74,9 @@ const registerUser = async (req, res) => {
             ${process.env.BASE_URL}/api/v1/users/verify/${token}`,
         }
 
-        await transporter.sendMail(mailOption)
+        // await transporter.sendMail(mailOption)
 
-        res.status(201).json({
+        res.status(200).json({
             message: "User registered successfully",
             success: true,
         })
@@ -116,6 +117,12 @@ const VerifyUser = async (req, res) => {
     user.verificationToken = undefined
     await user.save()
 
+    if(user){
+        res.status(200).json({
+            message: "verification successful",
+            success: true
+        })
+    }
 };
 
 const login = async (req, res) => {
@@ -130,12 +137,15 @@ const login = async (req, res) => {
 
     try {
      const user =  await User.findOne({email})
+     console.log(user);
+     
 
      if(!user){
         res.status(400).json({
             message: "Invalid email or password"
         });
      }
+
      const isMatch = await bcrypt.compare(password , user.password)
 
      console.log(isMatch);
@@ -146,10 +156,11 @@ const login = async (req, res) => {
         });
      }
 
-     jwt.sign(
+
+     const token =  jwt.sign(
         {id: user._id, role: user.role},
 
-        "shhhhh", {
+        process.env.JWT_SECRET, {
             expiresIn: '24h'
         }
      );
@@ -159,7 +170,7 @@ const login = async (req, res) => {
         secure: true,
         maxAge: 24*60*60*1000
      }
-     res.cookie("test", token, cookieOptions)
+     res.cookie("token", token, cookieOptions)
 
      res.status(200).json({
         success: true,
@@ -182,4 +193,66 @@ const login = async (req, res) => {
     }
 };
 
-export { registerUser , VerifyUser , login};
+const getMe = async (req, res) => {
+    try {
+
+      const user = await User.findById(req.user.id).select('-password')
+      console.log("User",user);
+      
+      if(!user){
+       return res.status(400).json({
+            success: false,
+            message:"User not found",
+        })
+      }
+
+      res.status(200).json({
+        success: true,
+        user,
+        message: "profie",
+      })
+        
+    } catch (error) {
+            console.log("error in getMe,",error)
+    }
+
+}
+
+const logoutUser = async (req, res) => {
+    try {
+        res.cookie('token', '' , {});
+        res.status(200).json({
+            success: true,
+            message: "Logged out successfully",
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            error,
+            message: "Logged out fails something error"
+        })
+    }
+}
+
+const forgotPassword = async (req, res) => {
+    try {
+        // get email
+        // find user base on email
+        // reset token + reset expiry => Date() + 10*60*1000
+        // send mail => design url
+    } catch (error) {
+        
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        // collect token from params 
+        // passeord from req.body
+        
+    } catch (error) {
+        
+    }
+}
+
+export { registerUser , VerifyUser , login , getMe , logoutUser , forgotPassword , resetPassword};
